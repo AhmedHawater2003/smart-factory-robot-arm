@@ -16,9 +16,15 @@ project(${ProjectName})
 # Initialize the Raspberry Pi Pico SDK
 pico_sdk_init()
 
+# Modify the below lines to enable/disable output over UART/USB
+
 # Add subdirectories
 add_subdirectory(src)
 
+
 # if you have anything in "lib" folder then uncomment below - remember to add a CMakeLists.txt
 # file to the "lib" directory
-#add_subdirectory(lib)
+add_subdirectory(lib)
+
+pico_enable_stdio_usb(${ProjectName} 0)
+pico_enable_stdio_usb(${ProjectName} 1)

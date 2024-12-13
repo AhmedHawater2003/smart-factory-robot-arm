@@ -1,0 +1,7 @@
+{
+  "files.associations": {
+    "*.sql": "postgres",
+    "*.css": "tailwindcss",
+    "servo.h": "c"
+  }
+}

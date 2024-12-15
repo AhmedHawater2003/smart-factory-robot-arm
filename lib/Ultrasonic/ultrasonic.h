@@ -29,17 +29,12 @@
 #endif
 
 #ifndef ECHO_PIN
-#define ECHO_PIN 19
+#define ECHO_PIN 26
 #endif
 
 #ifndef TRIG_PIN
-#define TRIG_PIN 20
+#define TRIG_PIN 27
 #endif
-
-#ifndef LED_PIN 
-#define LED_PIN 21
-#endif
-
 
 
 void ultrasonic_init();//uint trigPin, uint echoPin);

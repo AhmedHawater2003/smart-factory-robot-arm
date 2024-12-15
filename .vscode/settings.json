@@ -2,6 +2,8 @@
   "files.associations": {
     "*.sql": "postgres",
     "*.css": "tailwindcss",
-    "servo.h": "c"
+    "servo.h": "c",
+    "led_driver.h": "c",
+    "ultrasonic.h": "c"
   }
 }

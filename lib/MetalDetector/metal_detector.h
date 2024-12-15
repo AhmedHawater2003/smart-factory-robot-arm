@@ -29,4 +29,6 @@ uint64_t metal_detector_init();
  **/
 uint64_t metal_detector_read();
 
+bool is_metal();
+
 #endif // METAL_DETECTOR_H

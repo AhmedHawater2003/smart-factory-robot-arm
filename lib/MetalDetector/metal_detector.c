@@ -34,3 +34,12 @@ uint64_t metal_detector_init() {
 uint64_t metal_detector_read() {
     return gpio_get(METAL_DETECTOR_PIN);
 }
+
+bool is_metal() {
+    uint64_t reading = metal_detector_read();
+    if(reading){
+        return true;
+    }
+    else
+        return false;
+}

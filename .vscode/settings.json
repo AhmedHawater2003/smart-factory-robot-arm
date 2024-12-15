@@ -4,6 +4,8 @@
     "*.css": "tailwindcss",
     "servo.h": "c",
     "led_driver.h": "c",
-    "ultrasonic.h": "c"
+    "ultrasonic.h": "c",
+    "ir_sensor.h": "c",
+    "metal_detector.h": "c"
   }
 }

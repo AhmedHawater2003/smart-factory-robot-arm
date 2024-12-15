@@ -8,7 +8,7 @@
 
 // Metal Detector specific constants
 #ifndef METAL_DETECTOR_PIN
-#define METAL_DETECTOR_PIN 22
+#define METAL_DETECTOR_PIN 0
 #endif
 
 // Metal Detector function prototypes

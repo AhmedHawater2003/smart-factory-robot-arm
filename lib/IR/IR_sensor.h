@@ -33,7 +33,7 @@
 
 
 
-#define IR_SENSOR_ADC_PIN 26 // Example: GP26
+#define IR_SENSOR_ADC_PIN 28 // Example: GP26
 
 // Function to initialize the ADC for the IR sensor
 void ir_sensor_init();
@@ -46,5 +46,7 @@ float ir_sensor_get_distance(uint16_t raw_value);
 
 // Function to classify if the object is red based on the ADC value
 bool ir_sensor_is_red(uint16_t raw_value);
+
+bool is_black(void);
 
 #endif

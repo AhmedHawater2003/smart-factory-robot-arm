@@ -37,7 +37,7 @@ uint64_t metal_detector_read() {
 
 bool is_metal() {
     uint64_t reading = metal_detector_read();
-    if(reading){
+    if(!reading){
         return true;
     }
     else

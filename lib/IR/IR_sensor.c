@@ -30,3 +30,8 @@ bool ir_sensor_is_red(uint16_t raw_value) {
     // Check if the raw value falls within the range for red objects
     return (raw_value >= red_min_threshold && raw_value <= red_max_threshold);
 }
+
+bool is_black(){
+    uint16_t raw_value = ir_sensor_read_raw();
+    return raw_value > 2000;
+}

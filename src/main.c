@@ -17,7 +17,11 @@
 int isResetted = 0;
 
 void servoGoDown(){
+    set_servo_angle(ELEVATOR_PIN,30);
+    sleep_ms(500);
     set_servo_angle(ELEVATOR_PIN,60);
+    sleep_ms(500);
+    set_servo_angle(ELEVATOR_PIN,90);
 }
 
 void servoGrip(){
@@ -25,27 +29,31 @@ void servoGrip(){
 }
 
 void servoGoUp(){
+    set_servo_angle(ELEVATOR_PIN,60);
+    sleep_ms(500);
     set_servo_angle(ELEVATOR_PIN,0);
 }
 
 void dropToSuccess(){
 
+    set_servo_angle(BASE_PIN,10);
+    sleep_ms(500);
     set_servo_angle(BASE_PIN,20);
     sleep_ms(500);
-    set_servo_angle(BASE_PIN,40);
-    sleep_ms(500);
-    set_servo_angle(BASE_PIN,60);
+    set_servo_angle(BASE_PIN,30);
     sleep_ms(500);
     set_servo_angle(GRIPPER_PIN,50);
 }
 
-// void dropToFailure(){
-//     servo_set_position_bottom(0);
-//     sleep_ms(3000);
-//     servo_set_position_gripper(20);
-//     sleep_ms(2000);
-//     servo_set_position_gripper(0);
-// }
+void dropToFailure(){
+    set_servo_angle(BASE_PIN,70);
+    sleep_ms(500);
+    set_servo_angle(BASE_PIN,80);
+    sleep_ms(500);
+    set_servo_angle(BASE_PIN,90);
+    sleep_ms(500);
+    set_servo_angle(GRIPPER_PIN,50);
+}
 
 void reset(){
         set_servo_angle(BASE_PIN,0);
@@ -75,14 +83,17 @@ void vMainTask(void *pvParameters)
             servoGoUp();
             sleep_ms(500);
 
-            // bool isRed = ir_sensor_is_red(ir_sensor_read_raw());
-            // bool isMetal = is_metal();
-            // if(isMetal && isRed){
+            uint16_t x = ir_sensor_read_raw();
+            printf("IR reading %d\n", (int)(x));
+            bool isBlack = is_black();
+            bool isMetal = is_metal();
+            printf("METAL reading %d\n", (int)(isMetal));
+            if(isMetal){
                 dropToSuccess();
-            // }
-            // else{
-            //     dropToFailure();
-            // }
+            }
+            else{
+                dropToFailure();
+            }
             sleep_ms(500);
         }
 
@@ -105,9 +116,9 @@ int main()
     init_servo(19);
     init_servo(18);
 
-    // ir_sensor_init();
+    ir_sensor_init();
     ultrasonic_init();
-    // metal_detector_init();
+    metal_detector_init();
     createTasks();
 
 

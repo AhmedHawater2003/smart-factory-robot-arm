@@ -13,8 +13,16 @@
 #define GRIPPER_PIN 21
 #define BASE_PIN 18
 #define ELEVATOR_PIN 19
+#define ACCEPT_LED 14
+#define REJECT_LED 15
+
+
+
+
 
 int isResetted = 0;
+int accepted = 0;
+int rejected = 0;
 
 void servoGoDown(){
     set_servo_angle(ELEVATOR_PIN,30);
@@ -55,7 +63,7 @@ void dropToFailure(){
     set_servo_angle(GRIPPER_PIN,50);
 }
 
-void reset(){
+void resetPosition(){
         set_servo_angle(BASE_PIN,0);
         sleep_ms(500);
         set_servo_angle(ELEVATOR_PIN,0);
@@ -64,12 +72,23 @@ void reset(){
         sleep_ms(500);
 }
 
+void displayAcceptedAndRejected(){
+    char buffer[16];
+    lcd_set_cursor(0, 0);
+    snprintf(buffer, sizeof(buffer), "Accepted: %d", accepted);
+    lcd_string(buffer);
+    lcd_set_cursor(1, 0);
+    snprintf(buffer, sizeof(buffer), "Rejected: %d", rejected);
+    lcd_string(buffer);
+}
+
 void vMainTask(void *pvParameters)
 {
+    displayAcceptedAndRejected();
     while (1)
     {
         if(!isResetted){
-            reset();
+            resetPosition();
             isResetted = 1;
         }
         uint64_t distance = getCm();
@@ -88,12 +107,22 @@ void vMainTask(void *pvParameters)
             bool isBlack = is_black();
             bool isMetal = is_metal();
             printf("METAL reading %d\n", (int)(isMetal));
-            if(isMetal){
+            if(isMetal && isBlack){
+                accepted++;
+                LED_On(ACCEPT_LED, true);
                 dropToSuccess();
             }
             else{
+                rejected++;
+                LED_On(REJECT_LED, true);
                 dropToFailure();
             }
+
+            lcd_clear();
+            displayAcceptedAndRejected();
+            LED_Off(REJECT_LED, true);
+            LED_Off(ACCEPT_LED, true);
+
             sleep_ms(500);
         }
 
@@ -119,6 +148,10 @@ int main()
     ir_sensor_init();
     ultrasonic_init();
     metal_detector_init();
+    lcd_init();
+
+    LED_Init_Positive_Logic(ACCEPT_LED);
+    LED_Init_Positive_Logic(REJECT_LED);
     createTasks();
 
 

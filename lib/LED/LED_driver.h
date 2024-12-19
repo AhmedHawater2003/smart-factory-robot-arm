@@ -12,8 +12,8 @@
 #include "pico/stdlib.h"
 #endif
 
-#define LED_RED 18 //defining the pin number for the Red Led to be Pin 18
-#define LED_GREEN 19 //defining the pin number for the Green Led to be Pin 19
+#define LED_RED 14 //defining the pin number for the Red Led to be Pin 18
+#define LED_GREEN 15 //defining the pin number for the Green Led to be Pin 19
 #define LED_BLUE 20 //defining the pin number for the Blue Led to be Pin 20
 #define LED_Initial_Delay 5e3  //5 seconds
 #define LED_Alternating_Delay 1e3 // 1 second

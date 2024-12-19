@@ -13,8 +13,8 @@
 #define GRIPPER_PIN 21
 #define BASE_PIN 18
 #define ELEVATOR_PIN 19
-#define ACCEPT_LED 14
-#define REJECT_LED 15
+#define ACCEPT_LED 15
+#define REJECT_LED 14
 
 
 
@@ -27,9 +27,9 @@ int rejected = 0;
 void servoGoDown(){
     set_servo_angle(ELEVATOR_PIN,30);
     sleep_ms(500);
-    set_servo_angle(ELEVATOR_PIN,60);
+    set_servo_angle(ELEVATOR_PIN,70);
     sleep_ms(500);
-    set_servo_angle(ELEVATOR_PIN,90);
+    // set_servo_angle(ELEVATOR_PIN,90);
 }
 
 void servoGrip(){
@@ -43,24 +43,43 @@ void servoGoUp(){
 }
 
 void dropToSuccess(){
-
-    set_servo_angle(BASE_PIN,10);
+    set_servo_angle(BASE_PIN,40);
     sleep_ms(500);
-    set_servo_angle(BASE_PIN,20);
+    set_servo_angle(ELEVATOR_PIN,30);
     sleep_ms(500);
-    set_servo_angle(BASE_PIN,30);
+    set_servo_angle(BASE_PIN,110);
     sleep_ms(500);
-    set_servo_angle(GRIPPER_PIN,50);
+     set_servo_angle(ELEVATOR_PIN,100);
+    sleep_ms(500);
+    set_servo_angle(GRIPPER_PIN,40);
+    sleep_ms(500);
+    set_servo_angle(ELEVATOR_PIN,0);
+    sleep_ms(500);
 }
 
 void dropToFailure(){
-    set_servo_angle(BASE_PIN,70);
+    //TODO: Add the drop to failure sequence
+    set_servo_angle(BASE_PIN,40);
+    sleep_ms(500);
+    set_servo_angle(ELEVATOR_PIN,30);
+    sleep_ms(500);
+    set_servo_angle(BASE_PIN,120);
+    sleep_ms(500);
+    set_servo_angle(ELEVATOR_PIN,60);
+    sleep_ms(500);
+    set_servo_angle(GRIPPER_PIN,40);
+    sleep_ms(500);
+    set_servo_angle(ELEVATOR_PIN,0);
+    sleep_ms(500);
+}
+
+void goToSensors(){
+    set_servo_angle(BASE_PIN,40);
     sleep_ms(500);
     set_servo_angle(BASE_PIN,80);
     sleep_ms(500);
-    set_servo_angle(BASE_PIN,90);
-    sleep_ms(500);
-    set_servo_angle(GRIPPER_PIN,50);
+    set_servo_angle(ELEVATOR_PIN,70);
+    sleep_ms(5000);
 }
 
 void resetPosition(){
@@ -68,7 +87,7 @@ void resetPosition(){
         sleep_ms(500);
         set_servo_angle(ELEVATOR_PIN,0);
         sleep_ms(500);
-        set_servo_angle(GRIPPER_PIN,50);
+        set_servo_angle(GRIPPER_PIN,40);
         sleep_ms(500);
 }
 
@@ -82,9 +101,42 @@ void displayAcceptedAndRejected(){
     lcd_string(buffer);
 }
 
+void displayIRReading(uint16_t reading){
+    char buffer[16];
+    lcd_set_cursor(0, 0);
+    snprintf(buffer, sizeof(buffer), "IR reading: %d", reading);
+    lcd_string(buffer);
+}
+
+void emote(){
+    set_servo_angle(BASE_PIN, 100);
+    sleep_ms(500);
+    set_servo_angle(BASE_PIN, 0);
+    sleep_ms(500);
+    set_servo_angle(GRIPPER_PIN, 50);
+    sleep_ms(500);
+    set_servo_angle(GRIPPER_PIN, 0);
+    set_servo_angle(BASE_PIN, 100);
+    sleep_ms(500);
+    set_servo_angle(BASE_PIN, 0);
+    sleep_ms(500);
+    set_servo_angle(GRIPPER_PIN, 50);
+    sleep_ms(500);
+    set_servo_angle(GRIPPER_PIN, 0);
+    set_servo_angle(BASE_PIN, 100);
+    sleep_ms(500);
+    set_servo_angle(BASE_PIN, 0);
+    sleep_ms(500);
+    set_servo_angle(GRIPPER_PIN, 50);
+    sleep_ms(500);
+    set_servo_angle(GRIPPER_PIN, 0);
+}
+
+
 void vMainTask(void *pvParameters)
 {
-    displayAcceptedAndRejected();
+    //displayAcceptedAndRejected();
+    displayIRReading(0);
     while (1)
     {
         if(!isResetted){
@@ -101,13 +153,20 @@ void vMainTask(void *pvParameters)
             sleep_ms(500);
             servoGoUp();
             sleep_ms(500);
+            
+            goToSensors();
 
             uint16_t x = ir_sensor_read_raw();
-            printf("IR reading %d\n", (int)(x));
+
+            lcd_clear();
+            displayIRReading(x);
+
             bool isBlack = is_black();
             bool isMetal = is_metal();
+
             printf("METAL reading %d\n", (int)(isMetal));
-            if(isMetal && isBlack){
+            if(isMetal){
+                printf("El7a2oona");
                 accepted++;
                 LED_On(ACCEPT_LED, true);
                 dropToSuccess();
@@ -119,10 +178,11 @@ void vMainTask(void *pvParameters)
             }
 
             lcd_clear();
-            displayAcceptedAndRejected();
+            // displayAcceptedAndRejected();
             LED_Off(REJECT_LED, true);
             LED_Off(ACCEPT_LED, true);
 
+            // emote();
             sleep_ms(500);
         }
 
@@ -215,7 +275,7 @@ int main()
 //         sleep_ms(1000);
 
 
-//         set_servo_angle(GRIPPER_PIN,50);
+        // set_servo_angle(GRIPPER_PIN,40);
 //         sleep_ms(1000);
 
 
